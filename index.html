@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Главная</title>
+        <style>
+            body {
+                background-color: black;
+            }
+            button {
+                padding: 2px;
+                margin: 10px;
+                border-radius: 5px;
+                width: 200px;
+                border: solid 2px #666;
+                background-color:rgb(155, 196, 196);
+                font-size: large;
+                font-family: "Segoe Print", "Segoe UI", "Trebuchet MS", Helvetica, sans-serif;
+            }
+            #container {
+                display: flex;
+                align-items: center;
+                flex-direction: column;
+                width: 100%;
+            }
+            h1 {
+                color: rgb(51,102,255);
+                font-size: 48px;
+                font-family: "Segoe Script", "Segoe UI", "Trebuchet MS", Helvetica, sans-serif;
+                font-weight: bold;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <h1>Главная страница информационного портала YLib</h1>
+            <div>
+                <button id="book">Перейти на книгу</button>
+            </div>
+            <div>
+                <button id="series">Перейти на серию</button>
+            </div>
+        </div>
+        <script>
+            const webSocket = new WebSocket('ws://localhost:8080/websocket');
+            const book = document.getElementById('book');
+            const series = document.getElementById('series');
+
+            book.addEventListener('click', () => {
+                document.location.pathname = '/book';
+            });
+            series.addEventListener('click', () => {
+                document.location.pathname = '/series';
+            });
+        </script>
+    </body>
+</html>
