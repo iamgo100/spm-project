@@ -151,30 +151,21 @@ def create_tables(con):
     )
     con.commit()
 
-def add_entry(con, cur):
-    while True:
-        t = input("table: ")
-        if t == "books":
-            cl = Books(); break
-        elif t == "series":
-            cl = Series(); break
-        elif t == "authors":
-            cl = Authors(); break
-        elif t == "inter":
-            cl = Interpreters(); break
-        else:
-            print('ошибка')
-    table = cl.name
+def make_entry(tcl):
     columns = []
     values = []
-    for i in range(len(cl.headers)):
-        val = input(f"{cl.headers[i]}: ")
+    for i in range(len(tcl.headers)):
+        val = input(f"{tcl.headers[i]}: ")
         if val:
-            columns.append(cl.columns[i])
+            columns.append(tcl.columns[i])
             values.append(val)
     columns = (',').join(columns)
     values = ('","').join(values)
-    query = f'INSERT INTO {table} ({columns}) VALUES ("{values}")'
+    return columns, values
+
+def add_entry(con, cur, tcl):
+    columns, values = make_entry(tcl)
+    query = f'INSERT INTO {tcl.name} ({columns}) VALUES ("{values}")'
     try:
         print(query)
         cur.execute(query)
@@ -182,6 +173,29 @@ def add_entry(con, cur):
         print(f'Ошибка добавления: {e}\n')
     else:
         print('Запись успешно добавлена\n')
+        con.commit()
+
+def change_entry(con, cur, tcl, key):
+    columns, values = make_entry(tcl)
+    query = f'UPDATE {tcl.name} SET ({columns}) = ("{values}") WHERE id = "{key}"'
+    try:
+        print(query)
+        cur.execute(query)
+    except sqlite3.Error as e:
+        print(f'Ошибка изменения: {e}\n')
+    else:
+        print('Запись успешно изменена\n')
+        con.commit()
+
+def delete_entry(con, cur, table, key):
+    query = f'DELETE FROM {table} WHERE id = "{key}"'
+    try:
+        print(query)
+        cur.execute(query)
+    except sqlite3.Error as e:
+        print(f'Ошибка удаления: {e}\n')
+    else:
+        print('Запись успешно удалена\n')
         con.commit()
 
 if __name__ == "__main__":
@@ -194,13 +208,16 @@ if __name__ == "__main__":
     except sqlite3.Error as e:
         print(f'Ошибка: {e}')
     
-    # add_entry(con, cur)
-    # table = input("table: ")
-    # res = []
+    # add_entry(con, cur, Series())
+    change_entry(con, cur, Books(), 1)
+    # delete_entry(con, cur, Series().name, 1)
+    res = []
     # query = f'SELECT * FROM authors'
     # res.append(cur.execute(query).fetchall())
     # query = f'SELECT * FROM interpreters'
     # res.append(cur.execute(query).fetchall())
-    # query = f'SELECT * FROM books'
+    query = f'SELECT * FROM books'
+    res.append(cur.execute(query).fetchall())
+    # query = f'SELECT * FROM serie_s'
     # res.append(cur.execute(query).fetchall())
-    # print(res)
+    print(res)

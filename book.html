@@ -8,8 +8,10 @@
                 background-color: black;
                 padding: 0px;
                 margin: 0px;
+                height: 100%;
             }
             h1 {
+                margin: 5px 0px;
                 color: rgb(51,102,255);
                 font-size: 48px;
                 font-family: "Segoe Script", "Segoe UI", "Trebuchet MS", Helvetica, sans-serif;
@@ -17,19 +19,34 @@
                 text-align: center;
             }
             h2 {
-                color: rgb(0, 35, 139);
+                margin: 5px 0px;
+                color: #ACF1FF;
                 font-size: 26px;
                 font-family: "Segoe Script", "Segoe UI", "Trebuchet MS", Helvetica, sans-serif;
+            }
+            p {
+                margin: 5px 0px;
+                color: #C5C087;
+                font-size: 20px;
+                font-family: "Segoe Print", "Segoe UI", "Trebuchet MS", Helvetica, sans-serif;
+            }
+            .text {
+                font-size: 14px;
             }
             .container {
                 display: flex;
                 align-items: center;
                 flex-direction: column;
             }
+            .text-cont {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
             #col-1, #col-3{
                 width: 20%;
                 min-height: 100%;
-                background-color: rgba(214, 214, 214, 0.5);
+                background-color: #e7fdff49;
                 margin: 0px;
                 padding: 10px;
             }
@@ -42,18 +59,63 @@
                 display: flex;
                 justify-content: space-around;
             }
+            #header {
+                margin-top: 30px;
+                width: 100%;
+                display: flex;
+                justify-content: space-around;
+            }
+            #main-info {
+                display: flex;
+                flex-direction: column;
+                width: 55%;
+            }
+            #cover {
+                width: 75%;
+                border-radius: 15px;
+                border: solid 5px rgb(51,102,255);;
+            }
+            #bottom {
+                width: 90%;
+                margin-top: 10px;
+            }
         </style>
     </head>
     <body>
         <div id="main-cont">
             <div id=col-1 class=container><h2>Меню</h2></div>
             <div id=col-2 class=container>
-                <h1>Book</h1>
+                <div id="header">
+                    <!-- https://c.radikal.ru/c19/2011/f6/accb6a5078a0.jpg -->
+                    <div id="cover-cont" class="container">
+                        <img src="https://c.radikal.ru/c19/2011/f6/accb6a5078a0.jpg" alt="Обложка книги" id="cover">
+                    </div>
+                    <div id="main-info">
+                        <h1 id="book-name">Название</h1>
+                        <p id="author">Автор</p>
+                        <p id="year">Год</p>
+                        <p id="publish">AST</p>
+                        <p id="interpreter">Неизвестно</p>
+                        <p id="series">Нет серии</p>
+                    </div>
+                </div>
+                <div id="bottom">
+                    <div id="annot" class="text-cont">
+                        <h2>Аннотация</h2>
+                        <p id="annot-text" class="text">Текст</p>
+                    </div>
+                    <div id="film" class="text-cont">
+                        <h2>Экранизации</h2>
+                        <p id="film-text" class="text">Текст</p>
+                    </div>
+                </div>
             </div>
             <div id=col-3 class=container><h2>Реклама</h2></div>
         </div>
         <script>
             const webSocket = new WebSocket('ws://localhost:8080/websocket');
+
+
         </script>
     </body>
 </html>
