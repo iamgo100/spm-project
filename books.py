@@ -21,7 +21,7 @@ class Books:
         "p_office",
         "year",
         "annotation",
-        "pict",
+        "cover",
         "series",
         "part",
         "film_adapt"
@@ -140,7 +140,7 @@ def create_tables(con):
             p_office TEXT NOT NULL,
             year INTEGER NOT NULL,
             annotation TEXT NOT NULL,
-            pict TEXT,
+            cover TEXT,
             series TEXT,
             part INTEGER,
             film_adapt TEXT,
@@ -198,26 +198,26 @@ def delete_entry(con, cur, table, key):
         print('Запись успешно удалена\n')
         con.commit()
 
-if __name__ == "__main__":
-
-    con = sqlite3.connect('books.db')
-    cur = con.cursor()
-
+def select_entry(con, cur, table, key):
+    query = f'SELECT * FROM {table} WHERE id = "{key}"'
     try:
+        print(query)
+        res = cur.execute(query).fetchall()
+    except sqlite3.Error as e:
+        print(f'Ошибка поиска: {e}\n')
+    else:
+        con.commit()
+        return res
+
+def connecting():
+    try:
+        con = sqlite3.connect('books.db')
+        cur = con.cursor()
         create_tables(con)
+        return con, cur
     except sqlite3.Error as e:
         print(f'Ошибка: {e}')
-    
-    # add_entry(con, cur, Series())
-    change_entry(con, cur, Books(), 1)
-    # delete_entry(con, cur, Series().name, 1)
-    res = []
-    # query = f'SELECT * FROM authors'
-    # res.append(cur.execute(query).fetchall())
-    # query = f'SELECT * FROM interpreters'
-    # res.append(cur.execute(query).fetchall())
-    query = f'SELECT * FROM books'
-    res.append(cur.execute(query).fetchall())
-    # query = f'SELECT * FROM serie_s'
-    # res.append(cur.execute(query).fetchall())
-    print(res)
+        return
+
+if __name__ == "__main__":
+    pass

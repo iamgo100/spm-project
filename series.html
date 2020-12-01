@@ -8,8 +8,10 @@
                 background-color: black;
                 padding: 0px;
                 margin: 0px;
+                height: 100%;
             }
             h1 {
+                margin: 5px 0px;
                 color: rgb(51,102,255);
                 font-size: 48px;
                 font-family: "Segoe Script", "Segoe UI", "Trebuchet MS", Helvetica, sans-serif;
@@ -17,24 +19,47 @@
                 text-align: center;
             }
             h2 {
-                color: rgb(0, 35, 139);
+                margin: 5px 0px;
+                color: #ACF1FF;
                 font-size: 26px;
                 font-family: "Segoe Script", "Segoe UI", "Trebuchet MS", Helvetica, sans-serif;
+            }
+            p {
+                margin: 5px 0px;
+                color: #C5C087;
+                font-size: 20px;
+                font-family: "Segoe Print", "Segoe UI", "Trebuchet MS", Helvetica, sans-serif;
+            }
+            .text {
+                font-size: 14px;
+                margin: 5px 0px;
+                color: #C5C087;
+                font-family: "Segoe Print", "Segoe UI", "Trebuchet MS", Helvetica, sans-serif;
             }
             .container {
                 display: flex;
                 align-items: center;
                 flex-direction: column;
             }
+            .text-cont {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+            .header {
+                color: rgb(51,102,255);
+            }
             #col-1, #col-3{
                 width: 20%;
                 min-height: 100%;
-                background-color: rgba(214, 214, 214, 0.5);
+                background-color: #e7fdff49;
                 margin: 0px;
                 padding: 10px;
             }
             #col-2 {
                 width: 60%;
+                margin-top: 30px;
+                padding: 0px 30px;
             }
             #main-cont {
                 width: 100%;
@@ -42,18 +67,94 @@
                 display: flex;
                 justify-content: space-around;
             }
+            #main-info {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            #to-the-main {
+                padding: 2px;
+                margin: 10px;
+                border-radius: 5px;
+                width: 200px;
+                border: solid 2px #666;
+                background-color:rgb(155, 196, 196);
+                font-size: large;
+                font-family: "Segoe Print", "Segoe UI", "Trebuchet MS", Helvetica, sans-serif;
+            }
         </style>
     </head>
     <body>
         <div id="main-cont">
-            <div id=col-1 class=container><h2>Меню</h2></div>
+            <div id=col-1 class=container>
+                <h2>Меню</h2>
+                <button id="to-the-main">На главную</button>
+            </div>
             <div id=col-2 class=container>
-                <h1>Series</h1>
+                <div id="main-info">
+                    <h1 id="name"></h1>
+                    <p id="author"></p>
+                    <p id="p-office"></p>
+                    <p id="interpreter"></p>
+                </div>
+                <div id="annotation" class="text-cont">
+                    <h2>Аннотация</h2>
+                    <p id="annot-text" class="text"></p>
+                </div>
+                <div id="sequence" class="text-cont">
+                    <h2>Хроника</h2>
+                    <p id="sequence-text" class="text"></p>
+                </div>
             </div>
             <div id=col-3 class=container><h2>Реклама</h2></div>
         </div>
         <script>
+            const btn = document.getElementById('to-the-main');
+
+            btn.addEventListener('click', () => {
+                document.location.pathname = '/';
+            });
+
             const webSocket = new WebSocket('ws://localhost:8080/websocket');
+
+            webSocket.onopen = () => {
+                webSocket.send('{"request": "open", "page": "series", "id": 1}')
+            };
+
+            webSocket.onmessage = event => {
+                message = JSON.parse(event.data);
+                if (message.response === "series") {
+                    console.log(message);
+                    if (message.annotation) {
+                        document.getElementById('annot-text').textContent = message.annotation;
+                    };
+                    if (message.author) {
+                        document.getElementById('author').innerHTML = `<span class="header">Автор: </span><span>${message.author}</span>`;
+                    };
+                    if (message.interpreter) {
+                        document.getElementById('interpreter').innerHTML = `<span class="header">Переводчик: </span><span>${message.interpreter}</span>`;
+                    };
+                    if (message.name) {
+                        document.getElementById('name').textContent = message.name;
+                    };
+                    if (message.p_office) {
+                        document.getElementById('p-office').innerHTML = `<span class="header">Издательство: </span><span>${message.p_office}</span>`;
+                    };
+                    if (message.sequence) {
+                        let args = message.sequence.split('><');
+                        let arr = args.map(el => {
+                            return `<li>${el}</li>`
+                        }).join('');
+                        console.log(arr)
+                        document.getElementById('sequence-text').innerHTML = `
+                            <ul class="text">
+                                ${arr}
+                            </ul>
+                        `;
+                    };
+                };
+            };
         </script>
     </body>
 </html>
